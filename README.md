@@ -5,7 +5,7 @@ Pozn.: Pro rychlejší běh programu se předpokládá, že král může vstoupi
 
 <div align="left">
   <p>Počáteční pozice:</p>
-  <img src="https://github.com/theosa88/3x3_chess/assets/141501863/1a7f6c99-b0e3-445f-bf0c-42f65934b81c">
+  <img src="https://github.com/theosa88/3x3_chess/assets/141501863/f822db65-8e6a-4898-90f9-d88904c1060e">
 </div>
 
 ## Uživatelská část
