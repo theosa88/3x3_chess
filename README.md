@@ -1,5 +1,5 @@
 # Šachy 3x3
-Program na vstupu od uživatele přijme nynější stav šachovnice a na výstup zvlášť vrátí tahy 1. hráče s bílými figurkami a tahy 2. hráče s modrými figurkami takové, aby hra dospěla z počáteční pozice do stavu zadaného uživatelem. Pak také pomocí animace tyto tahy postupně vizualizuje. Přitom se předpokládá, že první byl na řadě hráč s bílými figurami a pak až hráč s modrými figurami a že hráč s bílými figurkami se do tohoto stavu dostal co nejmenším počtem kroků.
+Program na vstupu od uživatele přijme nynější stav šachovnice. Pokud pak existuje řešení za předpokladu toho, že první byl na řadě hráč s bílými figurami a pak až hráč s modrými figurami a že hráč s bílými figurkami se do tohoto stavu dostal co nejmenším počtem kroků, tak na výstup zvlášť vrátí tahy 1. hráče s bílými figurkami a tahy 2. hráče s modrými figurkami takové, aby hra dospěla z počáteční pozice do stavu zadaného uživatelem. Pak také pomocí animace tyto tahy postupně vizualizuje. Zároveň jsou do jednoho souboru nazvaného temp zapisovány všechny případy, které program vyzkoušel a do dalšího souboru nazvaného results je zapsán výsledek. Pokud pak řešení neexistuje, tak program vypíše na output: „No solution found!" a do souboru temp zapíše všechny vyzkoušené případy.
 
 Pozn.: Pro rychlejší běh programu se předpokládá, že král může vstoupit do šachu.
 
