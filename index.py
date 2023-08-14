@@ -10,6 +10,18 @@ class ChessGridGUI(wx.Frame):
         # set the size of the window
         self.SetSize(400, 500)
 
+        self.initial_blue_positions = {
+            (0, 0): 1,  # Bishop
+            (0, 1): 0,  # Pawn
+            (0, 2): 2   # King
+        }
+
+        self.initial_white_positions = {
+            (2, 0): 2,  # King
+            (2, 1): 0,  # Pawn
+            (2, 2): 1   # Bishop
+        }
+
         # create a panel that will contain all the elements of the window
         self.panel = wx.Panel(self)
 
@@ -83,10 +95,33 @@ class ChessGridGUI(wx.Frame):
 
                 # when the button is clicked, self.button_click will be called
                 button.Bind(wx.EVT_BUTTON, lambda evt, r=row,
-                                                  c=col: self.button_click(evt, r, c))
+                            c=col: self.button_click(evt, r, c))
 
-                # update the image displayed on the button to show an initial image
-                self.update_button_image(button, row, col, None)
+		# if there's supposed to be a white chess piece at this position
+                if (row, col) in self.initial_white_positions:
+
+                    # index of that white chess piece
+                    piece_index = self.initial_white_positions[(row, col)]
+
+                    # work with white chess piece
+                    self.whichColor = "white"
+
+                    # update the image of the chess piece on a button
+                    self.update_button_image(button, row, col, piece_index)
+
+                    # remove piece_index from the list of white chess pieces that haven´t been yet positioned on the board
+                    self.unused_pieces["white"].remove(piece_index)
+
+                elif (row, col) in self.initial_blue_positions:
+                    piece_index = self.initial_blue_positions[(row, col)]
+                    self.whichColor = "blue"
+                    self.update_button_image(button, row, col, piece_index)
+                    self.unused_pieces["blue"].remove(piece_index)
+
+		# update the image to indicate that there is no chess piece
+                else:
+                    self.update_button_image(button, row, col, None)
+
 
                 # add a grid of buttons to self.main_sizer
                 self.grid_sizer.Add(button, flag=wx.EXPAND)
@@ -219,7 +254,7 @@ class ChessGridGUI(wx.Frame):
 
     # calculate and print the positions of all pieces on the board and the total number of moves taken to get from their initial positions to their current positions
     def return_board(self, event):
-
+        print("Calculating...")
         # the program is now perfoming a calculation
         self.status = "Calculating..."
 
@@ -288,8 +323,8 @@ class ChessGridGUI(wx.Frame):
         # dictionary that stores the rules for movement of each piece
         movement_rules = {
             'Pawn': {
-                'white': [(-1, 0)],
-                'blue': [(1, 0)]
+                'blue': [(1, 0)],
+                'white': [(-1, 0)]
             },
             'King': [(1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (1, -1), (-1, 1), (-1, -1)],
             'Bishop': [(1, 1), (1, -1), (-1, -1), (-1, 1)],
@@ -325,6 +360,10 @@ class ChessGridGUI(wx.Frame):
             # Get the current state, moves, and turn
             state, moves, turn = games.popleft()
 
+            # open/create file and add the state to it
+            with open('temp.txt', 'a') as temp_file:
+                temp_file.write(f"{state}\n")
+
             # create a hashable representation of the current game state
             state_hash = hash(frozenset(state.items()))
 
@@ -338,6 +377,11 @@ class ChessGridGUI(wx.Frame):
 
             # If the current state is the final state
             if state == final_state:
+                with open('results.txt', 'a') as file:
+
+                    # write the moves to the file
+                    file.write(str(moves) + '\n')
+
                 print(moves)
 
                 # animates the moves that led to the state
@@ -362,7 +406,17 @@ class ChessGridGUI(wx.Frame):
                         new_turn = 'white' if turn == 'blue' else 'blue'
 
                         # Add the new state, moves till this point, current move and turn to the list of games
-                        games.append((new_state, moves + [(color, piece, pos, new_pos)], new_turn))
+                        games.append(
+                            (new_state, moves + [(color, piece, pos, new_pos)], new_turn))
+
+	# the program couldn´t find a solution
+        else:
+            print("No solution found!")
+            self.status = "No solution found!"
+
+            # update the text on the label immediately
+            self.status_indicator.SetLabel(f"Status: {self.status.title()}")
+            self.status_indicator.Update()
 
     # set up and start the animation of the chess pieces on the game board
     def animate_moves(self, moves):
